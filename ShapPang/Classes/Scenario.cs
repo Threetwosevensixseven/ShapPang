@@ -17,14 +17,26 @@ namespace ShapPang.Classes
     /// </summary>
     public class Scenario
     {
+        private string name;
+
+        /// <summary>
+        /// This generates a new blank scenario with the name provided. Attempting to execute this scenario will
+        /// result in an exception.
+        /// </summary>
+        /// <param name="Name">The name for this scenario</param>
+        public Scenario(string Name)
+        {
+            name = Name;
+            ID = Guid.NewGuid();
+        }
         /// <summary>
         /// The friendly name of this scenario.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get {return name;} }
 
         /// <summary>
         /// This is the unique key for this instance of a secenario.        
         /// </summary>
-        public Guid ID { get; }
+        public Guid ID { get; set; }
     }
 }

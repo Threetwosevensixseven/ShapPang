@@ -11,7 +11,7 @@ namespace UnitTests
         [TestMethod]
         public void BasicXTimesY()
         {
-            Scenario testScenario = new Scenario();            
+            Scenario testScenario = new Scenario("X Times Y");               
             throw new TestIncompleteException();
         }
     }
