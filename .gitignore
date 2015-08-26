@@ -1,5 +1,6 @@
-packages\Antlr4.4.3.0*/
-
-packages/Antlr4.4.3.0/Antlr4.4.3.0.nupkg
-packages\Antlr4.4.3.0\build*/
-packages\Antlr4.4.3.0\build*/
+ShapPang/bin/
+ShapPang/obj/
+TestResults/
+UnitTests/bin/
+UnitTests/obj/
+packages/*/

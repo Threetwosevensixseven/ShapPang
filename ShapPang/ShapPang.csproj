@@ -44,6 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Derivative.cs" />
+    <Compile Include="Classes\Given.cs" />
+    <Compile Include="Classes\Givens.cs" />
+    <Compile Include="Classes\Scenario.cs" />
     <Compile Include="ShapPang.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShapPang.g4.lexer.cs">
