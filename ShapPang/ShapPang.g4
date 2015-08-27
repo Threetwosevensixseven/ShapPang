@@ -4,8 +4,11 @@ grammar ShapPang;
  * Parser Rules
  */
 compileUnit
-	: assign	EOF
+	: (element)* EOF
 	;
+
+element: 
+	elementname = ID '(' (description = STRINGLITERAL)? ')' '{' (assign|declaration)? '}';
 
 assign: ID '=' expressionToEval = expression;
 expression: left= expression operator='*' right=expression #ExpressionMultiply
@@ -15,16 +18,19 @@ expression: left= expression operator='*' right=expression #ExpressionMultiply
 | DECIMAL #ExpressionConstant
 | INT #ExpressionConstant;
 
+declaration: ID NEWLINE;
+
 COMMENT: '//';
 INT: (NUMBERS)+;
 DECIMAL: (NUMBERS)+('.'(NUMBERS)+)?;
 NUMBERS: [0-9];
+STRINGLITERAL : '"' ~["\r\n]* '"'; 
 
 /*
  * Lexer Rules
  */
 ID: ([A-Za-z])+;
-NEWLINE: [\r\n];
+NEWLINE: [\r\n] -> skip;
 fragment A : [aA];
 fragment B : [bB];
 fragment C : [cC];

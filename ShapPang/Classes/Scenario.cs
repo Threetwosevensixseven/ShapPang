@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Antlr4.Runtime;
+using ShapPang.Classes.Antlr;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +20,25 @@ namespace ShapPang.Classes
     public class Scenario
     {
         private string name;
+        private ShapPangParser parser;
+        private CommonTokenStream tokens;
+        private ShapPangLexer lexer;
+        private AntlrInputStream input;
+        private ShapVisitor visitor;
+
+        public void InstallMarkup(string markup)
+        {
+            input = new AntlrInputStream(markup);
+            lexer = new ShapPangLexer(input);
+            tokens = new CommonTokenStream(lexer);
+            parser = new ShapPangParser(tokens);
+            visitor = new ShapVisitor(this);
+            parser.AddErrorListener(new ShapPangErrorListener());
+            ShapPangParser.CompileUnitContext context = parser.compileUnit();            
+            if (parser.NumberOfSyntaxErrors != 0)
+                throw new Exception("Parsing failed");
+            visitor.VisitCompileUnit(context);                 
+        }
 
         /// <summary>
         /// This generates a new blank scenario with the name provided. Attempting to execute this scenario will
@@ -28,6 +49,7 @@ namespace ShapPang.Classes
         {
             name = Name;
             ID = Guid.NewGuid();
+            Elements = new List<string>();
         }
         /// <summary>
         /// The friendly name of this scenario.
@@ -38,5 +60,8 @@ namespace ShapPang.Classes
         /// This is the unique key for this instance of a secenario.        
         /// </summary>
         public Guid ID { get; set; }
+
+
+        public List<string> Elements { get; set; }
     }
 }
