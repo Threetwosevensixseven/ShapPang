@@ -26,6 +26,11 @@ namespace ShapPang.Classes
         private AntlrInputStream input;
         private ShapVisitor visitor;
 
+        /// <summary>
+        /// Installs this scenario's markup. This will inflate the list of givens, elements and available
+        /// derivatives.
+        /// </summary>
+        /// <param name="markup">The calculation markup to be used in this scenario.</param>
         public void InstallMarkup(string markup)
         {
             input = new AntlrInputStream(markup);
@@ -49,7 +54,8 @@ namespace ShapPang.Classes
         {
             name = Name;
             ID = Guid.NewGuid();
-            Elements = new List<string>();
+            Elements = new List<Element>();
+            Givens = new Dictionary<string, object>();
         }
         /// <summary>
         /// The friendly name of this scenario.
@@ -61,7 +67,20 @@ namespace ShapPang.Classes
         /// </summary>
         public Guid ID { get; set; }
 
+        /// <summary>
+        /// Represents the calculation elements that a scenario can contain. For example, a scenario
+        /// could contain elements that represent a quote, quote lines and product items.
+        /// </summary>
+        public List<Element> Elements { get; set; }
 
-        public List<string> Elements { get; set; }
+        /// <summary>
+        /// Represents the list of "givens" or facts that we know about a scenario.
+        /// </summary>
+        public Dictionary<string, object> Givens { get; set; }
+
+        public void AssociateGivensFromXML(string XML)
+        {
+            
+        }
     }
 }

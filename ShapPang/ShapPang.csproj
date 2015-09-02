@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Classes\Antlr\ShapVisitor.cs" />
     <Compile Include="Classes\Derivative.cs" />
+    <Compile Include="Classes\Element.cs" />
     <Compile Include="Classes\Given.cs" />
     <Compile Include="Classes\Givens.cs" />
     <Compile Include="Classes\Scenario.cs" />
