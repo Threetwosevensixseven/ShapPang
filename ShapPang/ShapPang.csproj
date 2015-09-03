@@ -49,6 +49,7 @@
     <Compile Include="Classes\Element.cs" />
     <Compile Include="Classes\Given.cs" />
     <Compile Include="Classes\Givens.cs" />
+    <Compile Include="Classes\IValue.cs" />
     <Compile Include="Classes\Scenario.cs" />
     <Compile Include="Classes\ShapPangErrorListener.cs" />
     <Compile Include="ShapPang.cs" />

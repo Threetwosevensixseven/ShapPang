@@ -9,7 +9,7 @@ namespace ShapPang.Classes
     /// <summary>
     /// A derivative is the output of any potential calculation within an element.
     /// </summary>
-    public class Derivative
+    public class Derivative:IValue
     {
         /// <summary>
         /// This is a list of all the assigments which take place while calculating this derived value.
@@ -21,12 +21,15 @@ namespace ShapPang.Classes
         /// Constructs a derivative with the provided name
         /// </summary>
         /// <param name="derivativeName">The name to give to this derivation</param>
-        public Derivative(string derivativeName)
+        public Derivative(string derivativeName, string payload)
         {
             this.Name = derivativeName;
+            this.Payload = payload;
             Assignments = new List<string>();
         }
 
-        public string Name { get; set; }
+        public string Name { get; set; }        
+
+        public string Payload { get; set; }
     }
 }

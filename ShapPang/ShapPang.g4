@@ -9,7 +9,7 @@ compileUnit
 
 element: 
 	elementname = ID '(' (description = STRINGLITERAL)? ')' NEWLINE '{' NEWLINE ((assign|givendeclaration|derivationdeclaration) NEWLINE)* '}';
-givendeclaration: ID;
+givendeclaration: ID ('(' description = STRINGLITERAL')')?;
 assign: ID '=' expressionToEval = expression;
 expression: left= expression operator='*' right=expression #ExpressionMultiply
 | left = expression operator=('+' |'-') right=expression #ExpressionAddMinus

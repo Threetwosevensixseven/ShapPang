@@ -11,7 +11,17 @@ namespace ShapPang.Classes
     /// any derivations using a ShapPang markup. Givens may represent nested collections or
     /// simple name/value pairs.
     /// </summary>
-    class Given
+    public class Given:IValue
     {
+
+        public Given(string key, decimal value)
+        {
+            // TODO: Complete member initialization
+            this.Key = key;
+            this.Value = value;
+        }
+        public string Key { get; set; }
+
+        public string Description { get; set; }
     }
 }

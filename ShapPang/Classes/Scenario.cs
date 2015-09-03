@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace ShapPang.Classes
 {
@@ -33,6 +34,8 @@ namespace ShapPang.Classes
         /// <param name="markup">The calculation markup to be used in this scenario.</param>
         public void InstallMarkup(string markup)
         {
+            Markup = markup;
+            Process = false;
             input = new AntlrInputStream(markup);
             lexer = new ShapPangLexer(input);
             tokens = new CommonTokenStream(lexer);
@@ -55,7 +58,7 @@ namespace ShapPang.Classes
             name = Name;
             ID = Guid.NewGuid();
             Elements = new List<Element>();
-            Givens = new Dictionary<string, object>();
+            Givens = new List<Given>();
         }
         /// <summary>
         /// The friendly name of this scenario.
@@ -76,11 +79,86 @@ namespace ShapPang.Classes
         /// <summary>
         /// Represents the list of "givens" or facts that we know about a scenario.
         /// </summary>
-        public Dictionary<string, object> Givens { get; set; }
+        public List<Given> Givens { get; set; }
 
+        /// <summary>
+        /// This method accepts an XML formatted string and associates it with givens in the current scenario.
+        /// </summary>
+        /// <param name="XML">An XML formatted string</param>
         public void AssociateGivensFromXML(string XML)
         {
-            
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(XML);
+            foreach (Given given in Givens)
+            {
+                XmlNode node = xml.SelectSingleNode("//" + given.Key);
+                if (node == null)
+                    continue;
+                given.Value = decimal.Parse(node.FirstChild.Value.ToString());
+            }
         }
+
+        public decimal CalculateDerivative(string derivativeReference)
+        {
+            string[] references = derivativeReference.Split('.');
+            Element el = this.Elements.Find(t => t.ElementName == references[0]);
+            if (el == null)
+                throw new ArgumentException("Provided element reference does not exist in this scenario.");
+            Derivative der = el.Derivations.Find(t => t.Name == references[1]);
+            if (der == null)
+                throw new ArgumentException("Provided derivative reference does not exist in the discovered element");
+            Process = true;
+            input = new AntlrInputStream(der.Payload);
+            lexer = new ShapPangLexer(input);
+            tokens = new CommonTokenStream(lexer);
+            parser = new ShapPangParser(tokens);
+            visitor = new ShapVisitor(this);
+            parser.AddErrorListener(new ShapPangErrorListener());
+            ShapPangParser.DerivationdeclarationContext context = parser.derivationdeclaration();
+            this.CurrentElement = el;
+            visitor.VisitDerivationdeclaration(context);
+            Process = false;
+            return CurrentDerivation.Value;
+        }
+
+        /// <summary>
+        /// The markup which has been associated with this scenario.
+        /// </summary>
+        public string Markup { get; set; }
+
+        /// <summary>
+        /// A flag indicating whether this scenario is processing.
+        /// </summary>
+        public bool Process { get; set; }
+
+        /// <summary>
+        /// This method associates an external source of givens (provided as a JSON formatted string).
+        /// </summary>
+        /// <param name="json">A JSON formatted string</param>
+        public void AssociateGivensFromJSON(string json)
+        {            
+        }
+
+        internal IValue ResolveReference(string reference)
+        {
+            IValue val = Givens.Find(t => t.Key == CurrentElement.ElementName + "." + reference);    
+            if (val == null)
+            {
+                val = Givens.Find(t => t.Key == reference);
+            }
+            if (val == null)
+            {            
+                string[] references = reference.Split('.');
+                Element el = Elements.Find(t => t.ElementName == references[0]);
+                if (el == null)
+                    throw new ArgumentException("Unable to reference expression element");
+                val = el.Derivations.Find(t => t.Name == references[1]);
+            }
+            return val;
+        }
+
+        public Element CurrentElement { get; set; }
+
+        public Derivative CurrentDerivation { get; set; }
     }
 }
