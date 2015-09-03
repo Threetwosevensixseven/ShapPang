@@ -21,15 +21,18 @@ namespace ShapPang.Classes
         /// Constructs a derivative with the provided name
         /// </summary>
         /// <param name="derivativeName">The name to give to this derivation</param>
-        public Derivative(string derivativeName, string payload)
+        public Derivative(string derivativeName, string description, string payload)
         {
             this.Name = derivativeName;
             this.Payload = payload;
+            this.Description = description;
             Assignments = new List<string>();
         }
 
         public string Name { get; set; }        
 
         public string Payload { get; set; }
+
+        public string Description { get; set; }
     }
 }

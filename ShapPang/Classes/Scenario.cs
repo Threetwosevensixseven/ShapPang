@@ -100,25 +100,8 @@ namespace ShapPang.Classes
 
         public decimal CalculateDerivative(string derivativeReference)
         {
-            string[] references = derivativeReference.Split('.');
-            Element el = this.Elements.Find(t => t.ElementName == references[0]);
-            if (el == null)
-                throw new ArgumentException("Provided element reference does not exist in this scenario.");
-            Derivative der = el.Derivations.Find(t => t.Name == references[1]);
-            if (der == null)
-                throw new ArgumentException("Provided derivative reference does not exist in the discovered element");
-            Process = true;
-            input = new AntlrInputStream(der.Payload);
-            lexer = new ShapPangLexer(input);
-            tokens = new CommonTokenStream(lexer);
-            parser = new ShapPangParser(tokens);
-            visitor = new ShapVisitor(this);
-            parser.AddErrorListener(new ShapPangErrorListener());
-            ShapPangParser.DerivationdeclarationContext context = parser.derivationdeclaration();
-            this.CurrentElement = el;
-            visitor.VisitDerivationdeclaration(context);
-            Process = false;
-            return CurrentDerivation.Value;
+            string dummy;
+            return CalculateDerivative(derivativeReference, out dummy);
         }
 
         /// <summary>
@@ -160,5 +143,33 @@ namespace ShapPang.Classes
         public Element CurrentElement { get; set; }
 
         public Derivative CurrentDerivation { get; set; }
+
+        public decimal CalculateDerivative(string derivativeReference, out string description)
+        {
+            CurrentlyBuildingExplanation = "";
+            string[] references = derivativeReference.Split('.');
+            Element el = this.Elements.Find(t => t.ElementName == references[0]);
+            if (el == null)
+                throw new ArgumentException("Provided element reference does not exist in this scenario.");
+            Derivative der = el.Derivations.Find(t => t.Name == references[1]);
+            if (der == null)
+                throw new ArgumentException("Provided derivative reference does not exist in the discovered element");
+            CurrentlyBuildingExplanation += el.ElementName + " contains a " + der.Name + ", " + der.Description; 
+            Process = true;
+            input = new AntlrInputStream(der.Payload);
+            lexer = new ShapPangLexer(input);
+            tokens = new CommonTokenStream(lexer);
+            parser = new ShapPangParser(tokens);
+            visitor = new ShapVisitor(this);
+            parser.AddErrorListener(new ShapPangErrorListener());
+            ShapPangParser.DerivationdeclarationContext context = parser.derivationdeclaration();
+            this.CurrentElement = el;
+            visitor.VisitDerivationdeclaration(context);
+            Process = false;
+            description = CurrentlyBuildingExplanation += " yielding a value of " + CurrentDerivation.Value.ToString();
+            return CurrentDerivation.Value;
+        }
+
+        public string CurrentlyBuildingExplanation { get; set; }
     }
 }

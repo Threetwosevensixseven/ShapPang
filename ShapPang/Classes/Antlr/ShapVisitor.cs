@@ -32,7 +32,7 @@ namespace ShapPang.Classes.Antlr
                 CurrentScenario.CurrentDerivation = CurrentScenario.CurrentElement.Derivations.Find(t => t.Name == context.ID().GetText());
                 return base.VisitDerivationdeclaration(context);
             }
-            CurrentScenario.CurrentDerivation = new Derivative(context.ID().GetText(), context.GetText());
+            CurrentScenario.CurrentDerivation = new Derivative(context.ID().GetText(), context.description.Text.Substring(1, context.description.Text.Length-2), context.GetText());
             CurrentScenario.CurrentElement.Derivations.Add(CurrentScenario.CurrentDerivation);
             object pendingReturn = base.VisitDerivationdeclaration(context);
             if (!CurrentScenario.CurrentDerivation.Assignments.Contains(CurrentScenario.CurrentDerivation.Name))
@@ -73,10 +73,12 @@ namespace ShapPang.Classes.Antlr
         }
 
         public override object VisitExpressionMultiply(ShapPangParser.ExpressionMultiplyContext context)
-        {
+        {            
             if (!CurrentScenario.Process)
                 return base.VisitExpressionMultiply(context);
+            CurrentScenario.CurrentlyBuildingExplanation += " the multiplication of";
             decimal left = (decimal)base.Visit(context.left);
+            CurrentScenario.CurrentlyBuildingExplanation += " and";
             decimal right = (decimal)base.Visit(context.right);
             return left * right;
         }
@@ -86,6 +88,21 @@ namespace ShapPang.Classes.Antlr
             if (!CurrentScenario.Process)
                 return base.VisitExpressionReference(context);
             IValue val = CurrentScenario.ResolveReference(context.ID().GetText());
+            string temp = val.GetType().ToString();
+            switch (val.GetType().ToString())
+            {
+                case "ShapPang.Classes.Given":
+                    Given giv = (Given)val;
+                    if (giv.Description == null)
+                        CurrentScenario.CurrentlyBuildingExplanation += " the given " + giv.Key + " (" + giv.Value.ToString() + ")";
+                    else
+                        CurrentScenario.CurrentlyBuildingExplanation += giv.Description;
+                    break;
+                case "ShapPang.Classes.Derivative":
+                    Derivative div = (Derivative)val;
+                    CurrentScenario.CurrentlyBuildingExplanation += div.Description + " ("+div.Value.ToString()+")";
+                    break;
+            }
             return val.Value;
         }
 
