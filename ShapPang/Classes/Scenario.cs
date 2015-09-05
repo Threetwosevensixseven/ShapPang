@@ -25,7 +25,7 @@ namespace ShapPang.Classes
         private CommonTokenStream tokens;
         private ShapPangLexer lexer;
         private AntlrInputStream input;
-        private ShapVisitor visitor;
+        private ShapPangBaseVisitor<object> visitor;
 
         /// <summary>
         /// Installs this scenario's markup. This will inflate the list of givens, elements and available
@@ -35,12 +35,11 @@ namespace ShapPang.Classes
         public void InstallMarkup(string markup)
         {
             Markup = markup;
-            Process = false;
             input = new AntlrInputStream(markup);
             lexer = new ShapPangLexer(input);
             tokens = new CommonTokenStream(lexer);
             parser = new ShapPangParser(tokens);
-            visitor = new ShapVisitor(this);
+            visitor = new ShapDiscoveryVisitor(this);
             parser.AddErrorListener(new ShapPangErrorListener());
             ShapPangParser.CompileUnitContext context = parser.compileUnit();            
             if (parser.NumberOfSyntaxErrors != 0)
@@ -110,11 +109,6 @@ namespace ShapPang.Classes
         public string Markup { get; set; }
 
         /// <summary>
-        /// A flag indicating whether this scenario is processing.
-        /// </summary>
-        public bool Process { get; set; }
-
-        /// <summary>
         /// This method associates an external source of givens (provided as a JSON formatted string).
         /// </summary>
         /// <param name="json">A JSON formatted string</param>
@@ -155,17 +149,15 @@ namespace ShapPang.Classes
             if (der == null)
                 throw new ArgumentException("Provided derivative reference does not exist in the discovered element");
             CurrentlyBuildingExplanation += el.ElementName + " contains a " + der.Name + ", " + der.Description; 
-            Process = true;
             input = new AntlrInputStream(der.Payload);
             lexer = new ShapPangLexer(input);
             tokens = new CommonTokenStream(lexer);
             parser = new ShapPangParser(tokens);
-            visitor = new ShapVisitor(this);
+            visitor = new ShapExecutionVisitor(this);
             parser.AddErrorListener(new ShapPangErrorListener());
             ShapPangParser.DerivationdeclarationContext context = parser.derivationdeclaration();
             this.CurrentElement = el;
             visitor.VisitDerivationdeclaration(context);
-            Process = false;
             description = CurrentlyBuildingExplanation += " yielding a value of " + CurrentDerivation.Value.ToString();
             return CurrentDerivation.Value;
         }
