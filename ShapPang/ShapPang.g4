@@ -13,7 +13,7 @@ givendeclaration: ID ('(' description = STRINGLITERAL')')?;
 assign: ID '=' expressionToEval = expression;
 expression: left= expression operator='*' right=expression #ExpressionMultiply
 | left = expression operator=('+' |'-') right=expression #ExpressionAddMinus
-| expression operator= '\\' expression #ExpressionDivide
+| left = expression operator= '\\' right = expression #ExpressionDivide
 | ID #ExpressionReference
 | DECIMAL #ExpressionConstant
 | INT #ExpressionConstant;
@@ -32,7 +32,7 @@ STRINGLITERAL : '"' ~["\r\n]* '"';
 /*
  * Lexer Rules
  */
-ID: ([A-Za-z])+;
+ID: ([A-Za-z.])+;
 NEWLINE: '\r'? '\n';
 fragment A : [aA];
 fragment B : [bB];

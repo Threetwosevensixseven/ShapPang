@@ -55,6 +55,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ParsingTests.cs" />
     <Compile Include="CalculationTests.cs" />
+    <Compile Include="DescriptionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ShapPang\ShapPang.csproj">

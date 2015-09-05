@@ -18,14 +18,39 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void BasicXTimesYIsSelfDescribing()
+        public void BasicXDividedByY()
         {
             Scenario testScenario = new Scenario("X Times Y");
-            testScenario.InstallMarkup("Basic()\r\n{\r\nX\r\nY\r\nPROD(\"whose result is found by\")\r\n{\r\nPROD = X * Y\r\n}\r\n}");
+            testScenario.InstallMarkup("Basic()\r\n{\r\nX\r\nY\r\nPROD(\"whose result is found by\")\r\n{\r\nPROD = X \\ Y\r\n}\r\n}");
+            testScenario.AssociateGivensFromXML("<Givens><Basic.X>10</Basic.X><Basic.Y>2</Basic.Y></Givens>");
+            Assert.AreEqual(5, testScenario.CalculateDerivative("Basic.PROD"));
+        }
+
+        [TestMethod]
+        public void BasicXMinusY()
+        {
+            Scenario testScenario = new Scenario("X Times Y");
+            testScenario.InstallMarkup("Basic()\r\n{\r\nX\r\nY\r\nPROD(\"whose result is found by\")\r\n{\r\nPROD = X - Y\r\n}\r\n}");
             testScenario.AssociateGivensFromXML("<Givens><Basic.X>5</Basic.X><Basic.Y>5</Basic.Y></Givens>");
-            string description = "";
-            testScenario.CalculateDerivative("Basic.PROD", out description);
-            Assert.AreEqual("Basic contains a PROD, whose result is found by the multiplication of the given Basic.X (5) and the given Basic.Y (5) yielding a value of 25", description);
+            Assert.AreEqual(0, testScenario.CalculateDerivative("Basic.PROD"));
+        }
+
+        [TestMethod]
+        public void BasicXAddY()
+        {
+            Scenario testScenario = new Scenario("X Times Y");
+            testScenario.InstallMarkup("Basic()\r\n{\r\nX\r\nY\r\nPROD(\"whose result is found by\")\r\n{\r\nPROD = X + Y\r\n}\r\n}");
+            testScenario.AssociateGivensFromXML("<Givens><Basic.X>5</Basic.X><Basic.Y>5</Basic.Y></Givens>");
+            Assert.AreEqual(10, testScenario.CalculateDerivative("Basic.PROD"));
+        }
+
+        [TestMethod]
+        public void TestGivenReferenceInSeperateElement()
+        {
+            Scenario testScenario = new Scenario("X Times Y");
+            testScenario.InstallMarkup("Far()\r\n{\r\nX\r\n}\r\nBasic()\r\n{\r\nY\r\nPROD(\"whose result is found by\")\r\n{\r\nPROD = Far.X * Y\r\n}\r\n}");
+            testScenario.AssociateGivensFromXML("<Givens><Far.X>5</Far.X><Basic.Y>5</Basic.Y></Givens>");
+            Assert.AreEqual(25, testScenario.CalculateDerivative("Basic.PROD"));
         }
 
         [TestMethod]

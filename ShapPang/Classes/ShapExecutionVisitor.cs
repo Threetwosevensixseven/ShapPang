@@ -43,6 +43,36 @@ namespace ShapPang.Classes
             return left * right;
         }
 
+        public override object VisitExpressionAddMinus(ShapPangParser.ExpressionAddMinusContext context)
+        {
+            bool adding = false;
+            if (context.@operator.Text == "+")
+                adding = true;
+            if (adding)
+                CurrentScenario.CurrentlyBuildingExplanation += " the addition of";
+            else
+                CurrentScenario.CurrentlyBuildingExplanation += " the subtraction of";
+            decimal right = (decimal)base.Visit(context.right);
+            if (adding)
+                CurrentScenario.CurrentlyBuildingExplanation += " to";
+            else
+                CurrentScenario.CurrentlyBuildingExplanation += " from";
+            decimal left = (decimal)base.Visit(context.left);            
+            if (adding)
+                return left + right;
+            else
+                return left - right;
+        }
+
+        public override object VisitExpressionDivide(ShapPangParser.ExpressionDivideContext context)
+        {
+            CurrentScenario.CurrentlyBuildingExplanation += " the division of";
+            decimal left = (decimal)base.Visit(context.left);
+            CurrentScenario.CurrentlyBuildingExplanation += " by";
+            decimal right = (decimal)base.Visit(context.right);
+            return left / right;
+        }
+
         public override object VisitExpressionReference(ShapPangParser.ExpressionReferenceContext context)
         {
             IValue val = CurrentScenario.ResolveReference(context.ID().GetText());
