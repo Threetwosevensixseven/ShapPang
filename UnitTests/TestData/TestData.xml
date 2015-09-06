@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Tests>
+	<Test testname="BasicXTimesY">
+		<Markup>Basic()
+				{
+					X
+					Y
+					PROD("whose result is found by")
+					{
+						PROD = X * Y
+					}
+				}</Markup>
+		<XML>
+			<Givens>
+				<Basic.X>5</Basic.X>
+				<Basic.Y>5</Basic.Y>
+			</Givens>
+		</XML>
+		<JSON>Dummy</JSON>
+		<Description>Dummy</Description>
+	</Test>
+</Tests>

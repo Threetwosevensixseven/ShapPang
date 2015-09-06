@@ -27,6 +27,7 @@ namespace ShapPang.Classes
         private AntlrInputStream input;
         private ShapPangBaseVisitor<object> visitor;
 
+        private Stack<ParsingContext> scenarioStack = new Stack<ParsingContext>();
         /// <summary>
         /// Installs this scenario's markup. This will inflate the list of givens, elements and available
         /// derivatives.
