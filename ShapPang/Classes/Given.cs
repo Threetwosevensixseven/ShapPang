@@ -16,7 +16,6 @@ namespace ShapPang.Classes
 
         public Given(string key, decimal value)
         {
-            // TODO: Complete member initialization
             this.Key = key;
             this.Value = value;
         }

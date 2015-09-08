@@ -18,6 +18,8 @@ namespace UnitTests.Helpers
             testDataFileStream = new FileStream("TestData\\TestData.xml", FileMode.Open);
             xmlDoc = new XmlDocument();
             xmlDoc.Load(testDataFileStream);
+            testDataFileStream.Close();
+            testDataFileStream.Dispose();
         }
 
         public TestData GetTestData(string TestName)

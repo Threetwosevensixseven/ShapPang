@@ -1,9 +1,3 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <OrderedTest name="Tests" storage="c:\users\spugnut\documents\visual studio 2012\projects\shappang\unittests\tests.orderedtest" id="c54f9fd0-fea7-444b-b8ee-cc19955b36fb" continueAfterFailure="true" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
-  <TestLinks>
-    <TestLink id="74107acd-7789-87bf-3ee1-8ef51204b67b" name="AssociateJSON" storage="bin\debug\unittests.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <TestLink id="9d67a87c-1bc2-f132-af3c-7eac98fd21cf" name="ParseInput" storage="bin\debug\unittests.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <TestLink id="db7e049f-e701-9ec1-e0cc-7f050d6af055" name="BasicXTimesY" storage="bin\debug\unittests.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <TestLink id="816bc508-2f82-9402-ac31-9b3c9c9499a1" name="AssociateXML" storage="bin\debug\unittests.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  </TestLinks>
 </OrderedTest>

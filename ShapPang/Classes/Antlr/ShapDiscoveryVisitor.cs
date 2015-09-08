@@ -27,7 +27,7 @@ namespace ShapPang.Classes.Antlr
 
         public override object VisitDerivationdeclaration(ShapPangParser.DerivationdeclarationContext context)
         {
-            CurrentScenario.CurrentDerivation = new Derivative(context.ID().GetText(), context.description.Text.Substring(1, context.description.Text.Length-2), context.GetText());
+            CurrentScenario.CurrentDerivation = new Derivative(context.ID().GetText(), context.description.Text.Substring(1, context.description.Text.Length-2), context.GetText(), this.CurrentScenario,this.CurrentScenario.CurrentElement);
             CurrentScenario.CurrentElement.Derivations.Add(CurrentScenario.CurrentDerivation);
             object pendingReturn = base.VisitDerivationdeclaration(context);
             if (!CurrentScenario.CurrentDerivation.Assignments.Contains(CurrentScenario.CurrentDerivation.Name))

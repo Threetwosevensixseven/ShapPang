@@ -1,7 +1,10 @@
 ﻿using Antlr4.Runtime;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ShapPang.Classes.Antlr;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -114,16 +117,28 @@ namespace ShapPang.Classes
         /// </summary>
         /// <param name="json">A JSON formatted string</param>
         public void AssociateGivensFromJSON(string json)
-        {            
+        {
+            JObject j = JObject.Parse(json);
+            JsonReader reader = j.CreateReader();
+            
         }
 
+        /// <summary>
+        /// Resolves a provided reference of forms "X" or "X.Y" and passes back the first given or 
+        /// derivation which matches.
+        /// </summary>
+        /// <param name="reference">The string reference for the given or derivative</param>
+        /// <returns>An IValue representing either the given or derivation the reference points to.</returns>
         internal IValue ResolveReference(string reference)
         {
+            //Find near givens with a full reference first.
             IValue val = Givens.Find(t => t.Key == CurrentElement.ElementName + "." + reference);    
             if (val == null)
             {
+                //Ok, try near givens with a partial reference
                 val = Givens.Find(t => t.Key == reference);
             }
+            //Ok, givens exhausted; find me a derivation with that reference.
             if (val == null)
             {            
                 string[] references = reference.Split('.');
@@ -135,10 +150,15 @@ namespace ShapPang.Classes
             return val;
         }
 
+        public Derivative CurrentDerivation { get; set; }
         public Element CurrentElement { get; set; }
 
-        public Derivative CurrentDerivation { get; set; }
-
+        /// <summary>
+        /// This method takes a reference to a derivative and forces a calculation of it's value.
+        /// </summary>
+        /// <param name="derivativeReference">A reference in the form "X.Y"</param>
+        /// <param name="description">A description string to be filled with the derivations method.</param>
+        /// <returns>The decimal value of the calculation.</returns>
         public decimal CalculateDerivative(string derivativeReference, out string description)
         {
             CurrentlyBuildingExplanation = "";
@@ -149,18 +169,10 @@ namespace ShapPang.Classes
             Derivative der = el.Derivations.Find(t => t.Name == references[1]);
             if (der == null)
                 throw new ArgumentException("Provided derivative reference does not exist in the discovered element");
-            CurrentlyBuildingExplanation += el.ElementName + " contains a " + der.Name + ", " + der.Description; 
-            input = new AntlrInputStream(der.Payload);
-            lexer = new ShapPangLexer(input);
-            tokens = new CommonTokenStream(lexer);
-            parser = new ShapPangParser(tokens);
-            visitor = new ShapExecutionVisitor(this);
-            parser.AddErrorListener(new ShapPangErrorListener());
-            ShapPangParser.DerivationdeclarationContext context = parser.derivationdeclaration();
-            this.CurrentElement = el;
-            visitor.VisitDerivationdeclaration(context);
-            description = CurrentlyBuildingExplanation += " yielding a value of " + CurrentDerivation.Value.ToString();
-            return CurrentDerivation.Value;
+            CurrentlyBuildingExplanation += el.ElementName + " contains a " + der.Name + ", " + der.Description;
+            der.CalculateDerivative();          
+            description = CurrentlyBuildingExplanation += " yielding a value of " + der.Value.ToString();
+            return der.Value;
         }
 
         public string CurrentlyBuildingExplanation { get; set; }

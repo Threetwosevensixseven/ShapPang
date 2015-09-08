@@ -23,7 +23,7 @@ namespace UnitTests
             Scenario scn = new Scenario("Test");
             scn.InstallMarkup("Basic()\r\n{\r\nX\r\nY\r\nPROD(\"Result\")\r\n{\r\nPROD = X * Y\r\n}\r\n}");
             Assert.AreEqual("Basic", scn.Elements[0].ElementName, "Element must be detected as 'basic'");
-            Assert.IsNotNull(scn.Givens.Find( t=> t.Key == "Basic.X"));
+            Assert.IsNotNull(scn.Givens.Find(t=> t.Key == "Basic.X"));
             Assert.IsNotNull(scn.Givens.Find(t => t.Key == "Basic.Y"));
             Assert.IsNotNull(scn.Elements[0].Derivations.Find(t => t.Name == "PROD"));
         }
