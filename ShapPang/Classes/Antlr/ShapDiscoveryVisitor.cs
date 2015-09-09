@@ -8,9 +8,9 @@ namespace ShapPang.Classes.Antlr
 {
     public class ShapDiscoveryVisitor : ShapPangBaseVisitor<object>
     {
-        public ShapDiscoveryVisitor(Scenario scenario)
+        public ShapDiscoveryVisitor(ParsingContext context)
         {
-            this.CurrentScenario = scenario;            
+            this.Context = context;
         }
 
         public override object VisitCompileUnit(ShapPangParser.CompileUnitContext context)
@@ -20,17 +20,19 @@ namespace ShapPang.Classes.Antlr
 
         public override object VisitElement(ShapPangParser.ElementContext context)
         {
-            CurrentScenario.CurrentElement = new Element(context.elementname.Text);
-            CurrentScenario.Elements.Add(CurrentScenario.CurrentElement);                       
+            Element el = new Element(context.elementname.Text);
+            Context.Scenario.AddElement(el);
+            Context.ElementScope = el; 
             return base.VisitElement(context);            
         }
 
         public override object VisitDerivationdeclaration(ShapPangParser.DerivationdeclarationContext context)
         {
-            CurrentScenario.CurrentDerivation = new Derivative(context.ID().GetText(), context.description.Text.Substring(1, context.description.Text.Length-2), context.GetText(), this.CurrentScenario,this.CurrentScenario.CurrentElement);
-            CurrentScenario.CurrentElement.Derivations.Add(CurrentScenario.CurrentDerivation);
+            Derivative der = new Derivative(context.ID().GetText(), context.description.Text.Substring(1, context.description.Text.Length-2), context.GetText(), Context.Scenario, Context.ElementScope);
+            Context.Scenario.AddDerivation(der);
+            Context.DerivationScope = der;
             object pendingReturn = base.VisitDerivationdeclaration(context);
-            if (!CurrentScenario.CurrentDerivation.Assignments.Contains(CurrentScenario.CurrentDerivation.Name))
+            if (!der.Assignments.Contains(der.Name))
             {
                 throw new Exception("A derivative must contain an assignment to itself in order to set it's return value");
             }
@@ -39,8 +41,8 @@ namespace ShapPang.Classes.Antlr
 
         public override object VisitGivendeclaration(ShapPangParser.GivendeclarationContext context)
         {
-            Given given = new Given(CurrentScenario.CurrentElement.ElementName + "." + context.ID().GetText(),0);
-            CurrentScenario.Givens.Add(given);
+            Given given = new Given(Context.ElementScope.ElementName + "." + context.ID().GetText(),0);
+            Context.Scenario.AddGiven(given);
             if (context.description != null)
                 given.Description = context.description.Text.Substring(1, context.description.Text.Length -2);
             return base.VisitGivendeclaration(context);
@@ -48,7 +50,7 @@ namespace ShapPang.Classes.Antlr
 
         public override object VisitAssign(ShapPangParser.AssignContext context)
         {
-            CurrentScenario.CurrentDerivation.Assignments.Add(context.ID().ToString());
+            Context.DerivationScope.AddAssignment(context.ID().ToString());
             return base.VisitAssign(context);
         }
 
@@ -57,9 +59,6 @@ namespace ShapPang.Classes.Antlr
                 return base.VisitExpressionReference(context);          
         }
 
-        /// <summary>
-        /// Represents the current scenario within which this visitor is performing it's operations.
-        /// </summary>
-        public Scenario CurrentScenario { get; set; }
+        internal ParsingContext Context { get; set; }
     }
 }

@@ -60,7 +60,7 @@ namespace ShapPang.Classes
             lexer = new ShapPangLexer(input);
             tokens = new CommonTokenStream(lexer);
             parser = new ShapPangParser(tokens);
-            visitor = new ShapExecutionVisitor(this);
+            visitor = new ShapExecutionVisitor(this, new ParsingContext() { ElementScope = this.Element });
             parser.AddErrorListener(new ShapPangErrorListener());
             ShapPangParser.DerivationdeclarationContext context = parser.derivationdeclaration();
             visitor.VisitDerivationdeclaration(context);
@@ -73,5 +73,10 @@ namespace ShapPang.Classes
         public bool Calculated { get; set; }
 
         public Element Element { get; set; }
+
+        internal void AddAssignment(string AssignmentName)
+        {
+            this.Assignments.Add(AssignmentName);
+        }
     }
 }

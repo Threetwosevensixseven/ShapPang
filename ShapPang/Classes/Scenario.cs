@@ -29,6 +29,7 @@ namespace ShapPang.Classes
         private ShapPangLexer lexer;
         private AntlrInputStream input;
         private ShapPangBaseVisitor<object> visitor;
+        private ParsingContext parseContext = new ParsingContext();
 
         private Stack<ParsingContext> scenarioStack = new Stack<ParsingContext>();
         /// <summary>
@@ -38,12 +39,13 @@ namespace ShapPang.Classes
         /// <param name="markup">The calculation markup to be used in this scenario.</param>
         public void InstallMarkup(string markup)
         {
+            parseContext.Scenario = this;
             Markup = markup;
             input = new AntlrInputStream(markup);
             lexer = new ShapPangLexer(input);
             tokens = new CommonTokenStream(lexer);
             parser = new ShapPangParser(tokens);
-            visitor = new ShapDiscoveryVisitor(this);
+            visitor = new ShapDiscoveryVisitor(parseContext);
             parser.AddErrorListener(new ShapPangErrorListener());
             ShapPangParser.CompileUnitContext context = parser.compileUnit();            
             if (parser.NumberOfSyntaxErrors != 0)
@@ -60,8 +62,8 @@ namespace ShapPang.Classes
         {
             name = Name;
             ID = Guid.NewGuid();
-            Elements = new List<Element>();
-            Givens = new List<Given>();
+            elements = new List<Element>();
+            givens = new List<Given>();
         }
         /// <summary>
         /// The friendly name of this scenario.
@@ -77,12 +79,16 @@ namespace ShapPang.Classes
         /// Represents the calculation elements that a scenario can contain. For example, a scenario
         /// could contain elements that represent a quote, quote lines and product items.
         /// </summary>
-        public List<Element> Elements { get; set; }
+        public List<Element> elements = new List<Element>();
+
+        public List<Element> Elements { get { return elements; } }
 
         /// <summary>
         /// Represents the list of "givens" or facts that we know about a scenario.
         /// </summary>
-        public List<Given> Givens { get; set; }
+        public List<Given> givens = new List<Given>();
+
+        public List<Given> Givens { get { return givens; } }
 
         /// <summary>
         /// This method accepts an XML formatted string and associates it with givens in the current scenario.
@@ -129,10 +135,10 @@ namespace ShapPang.Classes
         /// </summary>
         /// <param name="reference">The string reference for the given or derivative</param>
         /// <returns>An IValue representing either the given or derivation the reference points to.</returns>
-        internal IValue ResolveReference(string reference)
+        internal IValue ResolveReference(string reference, string ElementScope)
         {
             //Find near givens with a full reference first.
-            IValue val = Givens.Find(t => t.Key == CurrentElement.ElementName + "." + reference);    
+            IValue val = Givens.Find(t => t.Key == ElementScope + "." + reference);    
             if (val == null)
             {
                 //Ok, try near givens with a partial reference
@@ -149,9 +155,6 @@ namespace ShapPang.Classes
             }
             return val;
         }
-
-        public Derivative CurrentDerivation { get; set; }
-        public Element CurrentElement { get; set; }
 
         /// <summary>
         /// This method takes a reference to a derivative and forces a calculation of it's value.
@@ -176,5 +179,20 @@ namespace ShapPang.Classes
         }
 
         public string CurrentlyBuildingExplanation { get; set; }
+
+        internal void AddElement(Element el)
+        {
+            this.Elements.Add(el);
+        }
+
+        internal void AddDerivation(Derivative der)
+        {
+            parseContext.ElementScope.Derivations.Add(der);
+        }
+
+        internal void AddGiven(Given given)
+        {
+            Givens.Add(given);
+        }
     }
 }

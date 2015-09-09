@@ -1,12 +1,27 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ShapPang.Classes;
+using UnitTests.Helpers;
 
 namespace UnitTests
 {
     [TestClass]
     public class DescriptionTests
     {
+        TestDataUnpacker unpack = new TestDataUnpacker();
+
+        [TestMethod]
+        public void IndirectionIsSelfDescribing()
+        {
+            Scenario testScenario = new Scenario("IndirectionTest");
+            TestData data = unpack.GetTestData("IndirectionTest");
+            testScenario.InstallMarkup(data.Markup);
+            testScenario.AssociateGivensFromXML(data.XML);
+            string description = "";
+            testScenario.CalculateDerivative("Other.FOO", out description);
+            throw new TestIncompleteException();
+        }
+
         [TestMethod]
         public void BasicXTimesYIsSelfDescribing()
         {

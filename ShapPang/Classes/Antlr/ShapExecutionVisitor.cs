@@ -7,15 +7,15 @@ namespace ShapPang.Classes
 {
     class ShapExecutionVisitor : ShapPangBaseVisitor<object>
     {
-        public ShapExecutionVisitor(Derivative derivative)
+        public ShapExecutionVisitor(Derivative derivative, ParsingContext Context)
         {
             this.CurrentDerivation = derivative;
+            this.ParsingContext = Context;
             CurrentScenario = derivative.Scenario;
         }
 
         public override object VisitDerivationdeclaration(ShapPangParser.DerivationdeclarationContext context)
-        {
-            //CurrentScenario.CurrentDerivation = CurrentScenario.CurrentElement.Derivations.Find(t => t.Name == context.ID().GetText());
+        {            
             return base.VisitDerivationdeclaration(context);
         }
 
@@ -31,7 +31,7 @@ namespace ShapPang.Classes
                 CurrentDerivation.Value = (decimal)base.VisitAssign(context);
                 return CurrentDerivation.Value;
             }
-            IValue val = CurrentScenario.ResolveReference(context.ID().GetText());
+            IValue val = CurrentScenario.ResolveReference(context.ID().GetText(), ParsingContext.ElementScope.ElementName);
             return base.VisitAssign(context);
         }
 
@@ -76,7 +76,7 @@ namespace ShapPang.Classes
 
         public override object VisitExpressionReference(ShapPangParser.ExpressionReferenceContext context)
         {
-            IValue val = CurrentScenario.ResolveReference(context.ID().GetText());
+            IValue val = CurrentScenario.ResolveReference(context.ID().GetText(), ParsingContext.ElementScope.ElementName);
             string temp = val.GetType().ToString();
             switch (val.GetType().ToString())
             {
@@ -89,7 +89,6 @@ namespace ShapPang.Classes
                     break;
                 case "ShapPang.Classes.Derivative":
                     Derivative div = (Derivative)val;
-                    CurrentScenario.CurrentElement = div.Element;
                     if (div.Calculated == false)
                         div.CalculateDerivative();
                     CurrentScenario.CurrentlyBuildingExplanation += div.Description + " (" + div.Value.ToString() + ")";
@@ -104,5 +103,7 @@ namespace ShapPang.Classes
         public Scenario CurrentScenario { get; set; }
 
         public Derivative CurrentDerivation { get; set; }
+
+        public ParsingContext ParsingContext { get; set; }
     }
 }
