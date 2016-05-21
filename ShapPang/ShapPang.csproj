@@ -35,7 +35,9 @@
       <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -49,6 +51,7 @@
     <Compile Include="Classes\Derivative.cs" />
     <Compile Include="Classes\Element.cs" />
     <Compile Include="Classes\Given.cs" />
+    <Compile Include="Classes\Givens.cs" />
     <Compile Include="Classes\IValue.cs" />
     <Compile Include="Classes\ParsingContext.cs" />
     <Compile Include="Classes\Scenario.cs" />

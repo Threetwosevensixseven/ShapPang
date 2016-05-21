@@ -5,8 +5,7 @@ using System.Text;
 
 namespace ShapPang.Classes
 {
-    public class IValue
+    class Givens : Dictionary<string,string>
     {
-        public decimal Value { get; set; }
     }
 }

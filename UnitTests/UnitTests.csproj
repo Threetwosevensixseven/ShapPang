@@ -75,6 +75,7 @@
   <ItemGroup>
     <Content Include="TestData\TestData.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <Choose>

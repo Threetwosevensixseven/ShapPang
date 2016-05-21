@@ -124,9 +124,17 @@ namespace ShapPang.Classes
         /// <param name="json">A JSON formatted string</param>
         public void AssociateGivensFromJSON(string json)
         {
-            JObject j = JObject.Parse(json);
-            JsonReader reader = j.CreateReader();
-            
+            //JObject j = JObject.Parse(json);
+            //JsonReader reader = j.CreateReader(); 
+            dynamic results = JsonConvert.DeserializeObject<dynamic>(json);
+            foreach (Given given in Givens)
+            {
+                foreach (dynamic JSON in results["Givens"])
+                {
+                    if (given.Key == JSON.ID.ToString())
+                        given.Value = decimal.Parse(JSON.Value.ToString());
+                }
+            }
         }
 
         /// <summary>
@@ -174,7 +182,7 @@ namespace ShapPang.Classes
                 throw new ArgumentException("Provided derivative reference does not exist in the discovered element");
             CurrentlyBuildingExplanation += el.ElementName + " contains a " + der.Name + ", " + der.Description;
             der.CalculateDerivative();          
-            description = CurrentlyBuildingExplanation += " yielding a value of " + der.Value.ToString();
+            description = CurrentlyBuildingExplanation += " yielding a value of " + der.Value.ToString()+".";
             return der.Value;
         }
 

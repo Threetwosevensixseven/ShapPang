@@ -87,11 +87,12 @@ namespace ShapPang.Classes
                     else
                         CurrentScenario.CurrentlyBuildingExplanation += giv.Description;
                     break;
-                case "ShapPang.Classes.Derivative":
+                case "ShapPang.Classes.Derivative":                    
                     Derivative div = (Derivative)val;
+                    CurrentScenario.CurrentlyBuildingExplanation += " the derivation of " + div.Name + " (";
                     if (div.Calculated == false)
                         div.CalculateDerivative();
-                    CurrentScenario.CurrentlyBuildingExplanation += div.Description + " (" + div.Value.ToString() + ")";
+                    CurrentScenario.CurrentlyBuildingExplanation += " which equals "+div.Value.ToString()+ ")";
                     break;
             }
             return val.Value;
