@@ -35,6 +35,9 @@
       <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,7 +47,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ShapPang.cs" />
+    <Compile Include="Classes\Antlr\ShapDiscoveryVisitor.cs" />
+    <Compile Include="Classes\Derivative.cs" />
+    <Compile Include="Classes\Element.cs" />
+    <Compile Include="Classes\Given.cs" />
+    <Compile Include="Classes\Givens.cs" />
+    <Compile Include="Classes\IValue.cs" />
+    <Compile Include="Classes\ParsingContext.cs" />
+    <Compile Include="Classes\Scenario.cs" />
+    <Compile Include="Classes\Antlr\ShapExecutionVisitor.cs" />
+    <Compile Include="Classes\Antlr\ShapPangErrorListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShapPang.g4.lexer.cs">
       <DependentUpon>ShapPang.g4</DependentUpon>

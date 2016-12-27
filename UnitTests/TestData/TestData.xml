@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Tests>
+	<Test testname="IndirectionTest">
+		<Markup>Basic()
+			{
+				X
+				Y
+				PROD("whose result is found by")
+				{
+					PROD = X * Y
+				}
+			}
+			Other()
+			{
+				FOO("whose result is found by")
+				{
+					FOO = Basic.PROD
+				}
+			}</Markup>
+		<XML>
+			<Givens>
+				<Basic.X>5</Basic.X>
+				<Basic.Y>5</Basic.Y>
+			</Givens>
+		</XML>
+		<JSON>Dummy</JSON>
+		<Description>Dummy</Description>
+	</Test>
+	<Test testname="BasicXTimesY">
+		<Markup>Basic()
+				{
+					X
+					Y
+					PROD("whose result is found by")
+					{
+						PROD = X * Y
+					}
+				}</Markup>
+		<XML>
+			<Givens>
+				<Basic.X>5</Basic.X>
+				<Basic.Y>5</Basic.Y>
+			</Givens>
+		</XML>
+		<JSON>Dummy</JSON>
+		<Description>Dummy</Description>
+	</Test>
+	<Test testname="BasicXTimesYJSON">
+		<Markup>Basic()
+			{
+				X
+				Y
+				PROD("whose result is found by")
+				{
+					PROD = X * Y
+				}
+			}</Markup>
+		<XML>Dummy</XML>
+		<JSON>{
+			"Given": {
+				"Basic.X": "5",
+				"Basic.Y": "5"
+				}
+			}</JSON>
+		<Description>Dummy</Description>
+	</Test>
+	<Test testname="BasicXDividedByY">
+		<Markup>Basic()
+			{
+				X
+				Y
+				PROD("whose result is found by")
+				{
+					PROD = X \ Y
+				}
+			}</Markup>
+		<XML>
+			<Givens>
+				<Basic.X>10</Basic.X>
+				<Basic.Y>2</Basic.Y>
+			</Givens>
+		</XML>
+		<JSON>Dummy</JSON>
+		<Description>Dummy</Description>
+	</Test>
+	<Test testname="BasicXAddY">
+		<Markup>Basic()
+			{
+				X
+				Y
+				PROD("whose result is found by")
+				{
+					PROD = X + Y
+				}
+			}</Markup>
+		<XML>
+			<Givens>
+				<Basic.X>5</Basic.X>
+				<Basic.Y>5</Basic.Y>
+			</Givens>
+		</XML>
+		<JSON>Dummy</JSON>
+		<Description>Dummy</Description>
+	</Test>
+	<Test testname="BasicXMinusY">
+		<Markup>Basic()
+			{
+				X
+				Y
+				PROD("whose result is found by")
+				{
+					PROD = X - Y
+				}
+			}</Markup>
+		<XML>
+			<Givens>
+				<Basic.X>5</Basic.X>
+				<Basic.Y>5</Basic.Y>
+			</Givens>
+		</XML>
+		<JSON>Dummy</JSON>
+		<Description>Dummy</Description>
+	</Test>
+</Tests>
